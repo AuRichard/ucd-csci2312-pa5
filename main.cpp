@@ -1,40 +1,48 @@
+//
+// Created by Ivo Georgiev on 11/22/15.
+//
+
+#ifndef PA5GAME_ERRORCONTEXT_H
+#define PA5GAME_ERRORCONTEXT_H
+
+
+
+/**
+ * Acknowledgement: Donnie Pinkston, CALTECH
+ */
+
 #include <iostream>
-#include <fstream>
+#include <set>
 #include <sstream>
-#include <vector>
 
-#include "ErrorContext.h"
-#include "TemplateTests.h"
+namespace Testing {
 
-using std::cout;
-using std::endl;
+    using std::set;
+    using std::ostream;
+    using std::string;
 
-using namespace Testing;
+    class ErrorContext              // displays test results
+    {
+    public:
+        ErrorContext(ostream &os);              // write header to stream
+        void desc(const char *msg, int line);   // write line/description
+        void desc(string msg, int line);
 
-int main() {
+        void result(bool good);                 // write test result
+        ~ErrorContext();                        // write summary info
+        bool ok() const;                        // true iff all tests passed
 
-    const int NumIters = 3;
+    private:
+        ostream &os;                            // output stream to use
+        int passed;                             // # of tests which passed
+        int total;                              // total # of tests
+        int lastline;                           // line # of most recent test
+        set<int> badlines;                      // line #'s of failed tests
+        bool skip;                              // skip a line before title?
+    };
 
-    cout << endl << "Testing PA5!!" << endl << endl;
-
-    cout << "NOTE:  If you see any memory errors, you MUST fix them!" << endl;
-    cout << "       Tests intentionally invoke destructors after they complete,"
-    << endl;
-    cout << "       so if you see a seg-fault after a passed test, it is"
-    << endl;
-    cout << "       probably a bug in your destructor." << endl;
-
-    cout << endl;
-
-    ErrorContext ec(cout);
-
-    // less tests
-    test_less_smoketest(ec);
-    test_less_usage(ec, NumIters);
-
-    // iterator tests
-    test_iterator_smoketest(ec);
-    test_iterator_usage(ec, NumIters);
-
-    return 0;
 }
+
+
+#endif //PA5GAME_ERRORCONTEXT_H
+
